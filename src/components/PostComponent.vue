@@ -1,57 +1,75 @@
 <template>
-  <div class='container'>
-    <h1>Latest Posts</h1>
+  <div class="container">
+    <h1>Things to Do Today:</h1>
     <div class="create-posts">
-      <label for= 'create-posts'>Say Something... </label>
-      <input type='text' id = 'create-posts' v-model='text' placeholder="Create a Post">
-      <button v-on:click= "createPost">Post!</button>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-11">
+            <input
+              type="text"
+              id="create-posts"
+              v-model="text"
+              placeholder="Create a Post"
+            />
+          </div>
+          <div class="col-md-1">
+            <button 
+            v-on:click="createPost" 
+            class="btn btn-secondary"
+            >Post</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <hr>
-    <p class='error' v-if='error'>{{error}}</p>
+    <hr border-width:10/>
+    <p class="error" v-if="error">{{ error }}</p>
     <div class="posts-container">
-      <div class="post" 
-      v-for = '(post, index) in posts'
-      v-bind:item="post"
-      v-bind:index="index"
-      v-bind:key="post._id"
-      v-on:click="deletePost(post._id)"
+      <div
+        class="post"
+        v-for="(post, index) in posts"
+        v-bind:item="post"
+        v-bind:index="index"
+        v-bind:key="post._id"
+        v-on:click="deletePost(post._id)"
       >
-      {{`${post.createdAt.getDate()}/${post.createdAt.getMonth()}/${post.createdAt.getFullYear()}`}}
-      <p class="text">{{ post.text }}</p>
+        {{
+          `${post.createdAt.getDate()}/${post.createdAt.getMonth()}/${post.createdAt.getFullYear()}`
+        }}
+        <p class="text">{{ post.text }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import PostService from '../PostService'
+import PostService from "../PostService";
 export default {
-  name: 'PostComponent',
-  data () {
-    return{
+  name: "PostComponent",
+  data() {
+    return {
       posts: [],
-      error: '',
-      text: ''
-    }
+      error: "",
+      text: "",
+    };
   },
-  async created(){
+  async created() {
     try {
       this.posts = await PostService.getPosts();
-    } catch(err) {
+    } catch (err) {
       this.error = err.messege;
     }
   },
-    methods: {
-      async createPost () {
-        await PostService.insertPost(this.text);
-        this.posts = await PostService.getPosts();
-      },
-      async deletePost (id) {
-        await PostService.deletePost(id);
-        this.posts = await PostService.getPosts();
-      }
-    }
-}
+  methods: {
+    async createPost() {
+      await PostService.insertPost(this.text);
+      this.posts = await PostService.getPosts();
+    },
+    async deletePost(id) {
+      await PostService.deletePost(id);
+      this.posts = await PostService.getPosts();
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -64,14 +82,14 @@ div.container {
 p.error {
   border: 1px solid #ff5b5f;
   background-color: #ffc5c1;
-  padding:  10px;
+  padding: 10px;
   margin-bottom: 15px;
 }
 
 div.post {
   position: relative;
-  background-color:  #a2b9bc;
-  padding: 5px 0px 5px 0px;
+  background-color: #a2b9bc;
+  padding: 0px 0px 0px 0px;
   margin-bottom: 15px;
 }
 
@@ -89,5 +107,15 @@ p.text {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 0;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 0px 0;
+  box-sizing: border-box;
+  border: none;
+  background-color: #a1a1a1;
+  color: white;
 }
 </style>
